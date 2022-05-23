@@ -1,17 +1,35 @@
-import React from 'react'
+import React, { useRef, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom';
 import classes  from './home.module.css';
 const Home = () => {
+  const navigate= useNavigate();
+  const name= useRef<HTMLInputElement>(null);
+  const [error,setError]=useState<string>();
+
+  const handleStart= ()=>{
+    const inputName= name.current?.value
+    if(inputName?.trim().length==0){
+        setError('Name field is missing')
+    }else{
+      navigate(`/game/${inputName}`);
+
+    }
+   
+  }
   return (
     <div className={classes.container}>
       <div className={classes.title}>Draw && Guess</div>
       <div className={classes.main}>
         <div className={classes.box}>
-          <div>
-            <button className={classes.button}>Create Game</button>
-          </div>
-          <div>
-            <button className={classes.button}>Join Game</button>
-          </div>
+          <input
+            ref={name}
+            className={classes.name}
+            placeholder="Enter your name.."
+          ></input>
+          <button className={classes.button} onClick={handleStart}>
+            Start Game
+          </button>
+          {error && <span className={classes.error}>{error}</span>}
         </div>
       </div>
     </div>

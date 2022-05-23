@@ -1,0 +1,12 @@
+.buttons{
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.button{
+    width: 200px;
+    margin-top: 15px;
+    background-color: transparent;
+}

@@ -1,13 +1,13 @@
 import React from 'react'
+import { NavLink } from 'react-router-dom';
 import classes from './navbar.module.css'
 const NavBar = () => {
   return (
     <div className="container-fluid ">
       <nav className="navbar navbar-expand-lg  bg-light">
-        <span className={`${classes.title} navbar-brand `}>
+        <NavLink  to='/' className={`${classes.title} navbar-brand `}>
           Draw && Guess Game
-        </span>
-       
+        </NavLink>
       </nav>
     </div>
   );

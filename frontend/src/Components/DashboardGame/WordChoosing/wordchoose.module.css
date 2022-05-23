@@ -1,10 +1,10 @@
 .container {
-     height: 100vh; 
     /* display: flex;
     justify-content: center; */
     margin: 25px;
 }
-.title{
+
+.title {
     font-weight: 800;
     color: aqua;
     font-size: 32px;
@@ -12,13 +12,14 @@
     width: 100%;
     justify-content: center;
 }
-.main{
+
+.main {
     display: flex;
     justify-content: center;
     /* margin-top: 25px; */
-    height: 50vh;
     align-items: center;
 }
+
 .box {
     height: 200px;
     width: 400px;
@@ -32,21 +33,14 @@
     flex-direction: column;
 
 }
-.name {
-    height: 35px;
-    width: 200px;
+.button {
+    height: 30px;
+    width: 100px;
     margin: 5px;
     background-color: transparent;
+    border:none
 }
-.button{
-    height: 50px;
-    width: 200px;
-    margin: 5px;
-    background-color: transparent;
-}
-.button:hover{
+
+.button:hover {
     background-color: rgb(51, 101, 121);
-}
-.error{
-    color: red;
 }
