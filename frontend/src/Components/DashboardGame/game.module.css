@@ -2,3 +2,21 @@
     display: flex;
     justify-content: center; 
 }
+.container {
+    height: 50vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.word{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+.word span  {
+    color: aqua;
+    font-weight: 500;
+    font-size: 24px;
+    margin-bottom: 5px;
+}

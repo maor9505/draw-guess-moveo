@@ -1,16 +1,19 @@
 import React, { useRef } from 'react'
 import CanvasDraw from "react-canvas-draw";
 import classes from './canvas.module.css';
-
-const Canvas = () => {
+interface Icanvas {
+  handleDraw: (draw: object) => void;
+  isGuess:boolean;
+  userDraw:string;
+}
+const Canvas = (props:Icanvas) => {
   const canvas = useRef(CanvasDraw);
-
+ 
   const handleClear=()=>{
-    console.log( canvas)
     canvas.current?.clear(); 
    }
     const handleSend =()=>{
-        console.log(canvas.current?.getSaveData());
+        props.handleDraw(canvas.current?.getSaveData());
     }
   return (
     <div>
@@ -20,15 +23,17 @@ const Canvas = () => {
         canvasHeight={400}
         gridColor={"rgb(51, 102, 153)"}
         brushRadius={5}
+        saveData={props.userDraw}
       />
-      <div className={classes.buttons}>
+      {!props.isGuess &&<div className={classes.buttons}>
         <button className={classes.button} onClick={() => handleClear()}>
           Clear Draw
         </button>
         <button className={classes.button} onClick={() => handleSend()}>
           Send Draw
         </button>
-      </div>
+      </div>}
+      {props.isGuess&& <span>guess here</span>}
     </div>
   );
 }

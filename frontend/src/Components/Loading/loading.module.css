@@ -1,0 +1,12 @@
+.loading{
+    font-size: 40px;
+    color: aqua;
+    font-weight: 700;
+}
+.container{
+    height: 50%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
