@@ -68,6 +68,12 @@ const Canvas = (props: Icanvas) => {
           {error && <span className={classes.error}>{error}</span>}
           <button
             className={classes.button}
+            onClick={() => props.handlePassTurn()}
+          >
+            Pass Turn
+          </button>
+          <button
+            className={classes.button}
             onClick={() => props.handleExitGame()}
           >
             Exit Game

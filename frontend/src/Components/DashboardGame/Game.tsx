@@ -27,7 +27,8 @@ const Game = () => {
   const [isWaitingForDraw, setIsWaitingForDraw] = useState<boolean>(true);
   const [wordChoose, setWordChoose] = useState<Iword>({ word: "", type: "" });
   const [isGuess, setIsGuess] = useState<boolean>(false);
-  const [isWaitingForUserGuess, setIsWaitingForUserGuess] =useState<boolean>(false);
+  const [isWaitingForUserGuess, setIsWaitingForUserGuess] =
+    useState<boolean>(false);
   const [userDraw, setUserDraw] = useState<string>("");
   const [userSocketId, setuserSocketId] = useState<string>("");
 
@@ -97,6 +98,15 @@ const Game = () => {
       setUserDraw("");
       setSecondPlayer((prevState) => ({ ...prevState, score: data.score }));
     });
+    socket.on("Guess Correct", (data) => {
+      setIsWaitingForDraw(true);
+      setUserDraw("");
+      setSecondPlayer((prevState) => ({ ...prevState, score: data.score }));
+    });
+    socket.on("Turn Pass", () => {
+      setIsWaitingForDraw(true);
+      setUserDraw("");
+    });
     socket.on("Get Word", (data) => {
       setWordChoose({ word: data.word, type: data.type });
     });
@@ -106,6 +116,7 @@ const Game = () => {
       socket.off("Get Draw");
       socket.off("Exit Game");
       socket.off("Guess Correct");
+      socket.off("Turn Pass");
       socket.off("Get Word");
     };
   }, []);
@@ -157,6 +168,12 @@ const Game = () => {
       setUserDraw("");
     }
   };
+  const handlePassTurn = () => {
+    socket.emit("Turn Pass", { socketId: userSocketId });
+    setisChooseWord(true);
+    setIsGuess(false);
+    setUserDraw("");
+  };
   // emit exit game
   const handleExitGame = () => {
     socket.emit("Exit Game");
@@ -201,6 +218,7 @@ const Game = () => {
               wordChoose={wordChoose}
               handleGuess={handleGuess}
               handleExitGame={handleExitGame}
+              handlePassTurn={handlePassTurn}
             />
           </div>
         </div>

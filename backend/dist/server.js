@@ -22,19 +22,16 @@ io.on("connection", (socket) => {
         socket.broadcast.emit("User Log", data);
     });
     socket.on("Send Draw", (data) => {
-        console.log('Send Draw room:  ' + data.room);
-        console.log('user send draw:  ' + data.name);
         socket.to(data.socketId).emit("Get Draw", data);
     });
     socket.on("Guess Correct", (data) => {
-        console.log("user guss correct and sent to");
-        console.log(data.socketId);
         socket.to(data.socketId).emit("Guess Correct", data);
     });
     socket.on("Send Word", (data) => {
-        console.log('Send Word');
-        console.log('Data--  ' + data);
         socket.to(data.socketId).emit("Get Word", data);
+    });
+    socket.on("Turn Pass", (data) => {
+        socket.to(data.socketId).emit("Turn Pass", data);
     });
     socket.on("Exit Game", () => {
         io.emit("Exit Game");
