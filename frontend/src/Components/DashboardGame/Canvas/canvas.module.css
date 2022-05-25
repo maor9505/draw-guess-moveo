@@ -4,11 +4,20 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    margin-top: 15px;
 }
 .button{
     width: 200px;
-    margin-top: 15px;
+    margin: 5px;
     background-color: transparent;
+        border-color: rgb(181, 228, 246);
+}
+.guess{
+    border-color: rgb(181, 228, 246);
+}
+.button:hover {
+    background-color: rgb(181, 228, 246);
+    ;
 }
 .error{
      color: red;

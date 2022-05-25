@@ -10,7 +10,6 @@ const Score:FC<IScore> = (props) => {
           <span>{props.firstPlayer.name}</span>
           <span>{props.firstPlayer.score}</span>
         </div>
-        <span>{props.timer}</span>
         <div className={classes["name2-field"]}>
           <span>{props.secondPlayer.name}</span>
           <span>{props.secondPlayer.score}</span>

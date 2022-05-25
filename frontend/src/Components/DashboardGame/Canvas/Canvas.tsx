@@ -1,41 +1,28 @@
-import React, { FormEvent, useRef,useState } from 'react'
+import React, { FormEvent, useRef, useState } from "react";
 import CanvasDraw from "react-canvas-draw";
-import { Iword } from '../../../Interfaces/Word';
-import classes from './canvas.module.css';
+import { Icanvas } from "../../../Interfaces/canvas";
+import classes from "./canvas.module.css";
 
-interface Icanvas {
-  handleDraw: (draw: object) => void;
-  isGuess: boolean;
-  userDraw: string;
-  wordChoose: Iword;
-  handleGuess: (isGuess: boolean, word: Iword) => void;
-}
-const Canvas = (props:Icanvas) => {
+const Canvas = (props: Icanvas) => {
   const canvas = useRef(CanvasDraw);
- const [inputGuess,setInputGuess] = useState<string>();
+  const [inputGuess, setInputGuess] = useState<string>();
   const [error, setError] = useState<string>("");
 
-  const handleClear=()=>{
-    canvas.current?.clear(); 
-   }
-    const handleSend =()=>{
-        props.handleDraw(canvas.current?.getSaveData());
+  const handleClear = () => {
+    canvas.current?.clear();
+  };
+  const handleSend = () => {
+    props.handleDraw(canvas.current?.getSaveData());
+  };
+  const handleGuessUser = (e: FormEvent) => {
+    e.preventDefault();
+    if (inputGuess === props.wordChoose.word) {
+      console.log(" canvas -- user correct");
+      props.handleGuess(true, props.wordChoose);
+    } else {
+      setError("Try again...");
     }
-    const handleGuessUser = (e: FormEvent) => {
-      e.preventDefault();
-      console.log('handle Guess')
-      console.log(props)
-      console.log(props.wordChoose);
-      console.log('word')
-      console.log(props.wordChoose.word);
-      if (inputGuess === props.wordChoose.word) {
-        console.log(' canvas -- user correct')
-        props.handleGuess(true, props.wordChoose);
-      } 
-      else {
-        setError("Try again...");
-      }
-    };
+  };
   return (
     <div>
       <CanvasDraw
@@ -54,6 +41,12 @@ const Canvas = (props:Icanvas) => {
           <button className={classes.button} onClick={() => handleSend()}>
             Send Draw
           </button>
+          <button
+            className={classes.button}
+            onClick={() => props.handleExitGame()}
+          >
+            Exit Game
+          </button>
         </div>
       )}
       {props.isGuess && (
@@ -62,17 +55,25 @@ const Canvas = (props:Icanvas) => {
             <input
               type="text"
               value={inputGuess}
+              className={classes.guess}
               placeholder="Enter your Guess"
               onChange={(e) => setInputGuess(e.target.value)}
-            >
-            </input>
-            <button type="submit">Send your guess</button>
-            {error && <span className={classes.error}>{error}</span>}
+            ></input>
+            <button className={classes.button} type="submit">
+              Send your guess
+            </button>
           </form>
+          {error && <span className={classes.error}>{error}</span>}
+          <button
+            className={classes.button}
+            onClick={() => props.handleExitGame()}
+          >
+            Exit Game
+          </button>
         </div>
       )}
     </div>
   );
-}
+};
 
-export default Canvas
+export default Canvas;

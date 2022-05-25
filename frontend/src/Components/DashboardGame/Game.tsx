@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Canvas from "./Canvas/Canvas";
 import Score from "./Score/Score";
 import classes from "./game.module.css";
@@ -11,21 +11,23 @@ import { Iword } from "../../Interfaces/Word";
 
 const Game = () => {
   const { name, room } = useParams();
+  const navigate = useNavigate();
   const [isWaitingForPlayer, setIsWaitingForPlayer] = useState<boolean>(true);
   const [firstPlayer, setFirstPlayer] = useState<IPlayer>({
     name: "",
     score: 0,
-    room:""
+    room: "",
   });
   const [secondPlayer, setSecondPlayer] = useState<IPlayer>({
     name: "",
     score: 0,
-    room:""
+    room: "",
   });
   const [isChooseWord, setisChooseWord] = useState<boolean>(false);
   const [isWaitingForDraw, setIsWaitingForDraw] = useState<boolean>(true);
   const [wordChoose, setWordChoose] = useState<Iword>({ word: "", type: "" });
   const [isGuess, setIsGuess] = useState<boolean>(false);
+  const [isWaitingForUserGuess, setIsWaitingForUserGuess] =useState<boolean>(false);
   const [userDraw, setUserDraw] = useState<string>("");
   const [userSocketId, setuserSocketId] = useState<string>("");
 
@@ -33,12 +35,11 @@ const Game = () => {
     transports: ["websocket"],
   });
   useEffect(() => {
-    if (name&&room) {
-      setFirstPlayer((prevState) => ({ ...prevState, name: name ,room:room}));
+    if (name && room) {
+      setFirstPlayer((prevState) => ({ ...prevState, name: name, room: room }));
     }
     socket.on("connect", () => {
       if (socket.connected) {
-        console.log("server connect " + socket.id);
         socket.emit("Start Game", {
           name: name,
           socketId: socket.id,
@@ -47,19 +48,18 @@ const Game = () => {
       }
     });
     socket.on("Start Game", (data) => {
-      console.log("start game");
-
-      console.log("Start Game room : " + data.room);
       setIsWaitingForPlayer(false);
-      setSecondPlayer((prevState) => ({ ...prevState, name: data.name,room:data.room}));
+      setSecondPlayer((prevState) => ({
+        ...prevState,
+        name: data.name,
+        room: data.room,
+      }));
       setIsWaitingForDraw(false);
       setuserSocketId(data.socketId);
       setisChooseWord(true);
       socket.emit("User Log", { name: name, socketId: socket.id, room: room });
     });
     socket.on("User Log", (data) => {
-      console.log("user log");
-      console.log("User room: " + data.room);
       setIsWaitingForPlayer(false);
       setuserSocketId(data.socketId);
       setSecondPlayer((prevState) => ({
@@ -69,14 +69,32 @@ const Game = () => {
       }));
     });
     socket.on("Get Draw", (data) => {
-      console.log("Get Draw");
-      console.log("Get Draw room:: " + data.room);
       setUserDraw(data.draw);
       setIsGuess(true);
+      setIsWaitingForUserGuess(false);
       setIsWaitingForDraw(false);
+    });
+    socket.on("Exit Game", () => {
+      console.log("Exit game");
+      setIsGuess(false);
+      setisChooseWord(false);
+      setIsWaitingForDraw(false);
+      setIsWaitingForPlayer(true);
+      setSecondPlayer({
+        name: "",
+        room: "",
+        score: 0,
+      });
+      setFirstPlayer({
+        name: "",
+        room: "",
+        score: 0,
+      });
+      navigate("/");
     });
     socket.on("Guess Correct", (data) => {
       setIsWaitingForDraw(true);
+      setUserDraw("");
       setSecondPlayer((prevState) => ({ ...prevState, score: data.score }));
     });
     socket.on("Get Word", (data) => {
@@ -85,8 +103,6 @@ const Game = () => {
   }, []);
 
   const handleChooice = (word: string, type: string) => {
-    console.log("handle chooice");
-    console.log(word);
     socket.emit("Send Word", {
       word: word,
       type: type,
@@ -96,29 +112,26 @@ const Game = () => {
     setWordChoose({ word: word, type: type });
   };
   const handleDraw = (draw: object) => {
-    console.log("draw");
-    console.log(draw);
-    console.log("send Draw room : " + firstPlayer.room);
     socket.emit("Send Draw", {
       name: firstPlayer.name,
       draw: draw,
       socketId: userSocketId,
-      room:firstPlayer.room
+      room: firstPlayer.room,
     });
+    setIsWaitingForUserGuess(true);
   };
   const handleGuess = (isGuess: boolean, word: Iword) => {
-    console.log(" Game --user correct");
     if (isGuess) {
-      let score = secondPlayer.score;
+      let score = 0;
       switch (word.type) {
         case "easy":
-          score += 1;
+          score = firstPlayer.score + 1;
           break;
         case "medium":
-          score += 2;
+          score = firstPlayer.score + 2;
           break;
         case "hard":
-          score += 3;
+          score = firstPlayer.score + 3;
           break;
       }
 
@@ -128,40 +141,44 @@ const Game = () => {
         socketId: userSocketId,
         room: secondPlayer.room,
       });
-      console.log("user socket id");
-      console.log(userSocketId);
       setFirstPlayer((prevState) => ({ ...prevState, score: score }));
       setisChooseWord(true);
       setIsGuess(false);
+      setUserDraw("");
     }
   };
+
+  const handleExitGame = () => {
+    socket.emit("Exit Game");
+  };
   return (
-    <div>
+    <div className={classes.container}>
       {isWaitingForPlayer && (
-        <div className={classes.container}>
+        <div className={classes.message}>
           <Loading content="Waiting for player..." />
         </div>
       )}
       {!isWaitingForPlayer && (
-        <Score
-          firstPlayer={firstPlayer}
-          secondPlayer={secondPlayer}
-          timer="1:00"
-        />
+        <Score firstPlayer={firstPlayer} secondPlayer={secondPlayer} />
       )}
       {isWaitingForDraw && !isWaitingForPlayer && (
-        <div className={classes.container}>
-          <Loading content={`Waiting for draw from ${secondPlayer.name}`} />
+        <div className={classes.message}>
+          <Loading content={`${secondPlayer.name} is Drawing...`} />
+        </div>
+      )}
+      {isWaitingForUserGuess && !isWaitingForDraw && (
+        <div className={classes.message}>
+          <Loading content={`${secondPlayer.name} is Gussing...`} />
         </div>
       )}
 
       {isChooseWord && !isWaitingForDraw && (
-        <div className={classes.container}>
+        <div className={classes.message}>
           <WordChoose handleChooice={handleChooice} />
         </div>
       )}
 
-      {!isWaitingForDraw && !isChooseWord && (
+      {!isWaitingForDraw && !isChooseWord && !isWaitingForUserGuess && (
         <div>
           <div className={classes.word}>
             {!isGuess && <span>{wordChoose.word}</span>}
@@ -173,6 +190,7 @@ const Game = () => {
               handleDraw={handleDraw}
               wordChoose={wordChoose}
               handleGuess={handleGuess}
+              handleExitGame={handleExitGame}
             />
           </div>
         </div>

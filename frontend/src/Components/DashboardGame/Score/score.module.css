@@ -1,15 +1,17 @@
 .container {
     display: flex;
     justify-content: center;
-    margin: 25px;
+    margin-top: 10px;
+    margin-bottom: 5px;
 }
 .scoreboard{
-    width: 70%;
-    background-color: lightblue;
+    width: 85%;
+    background-color: rgb(181, 228, 246);
     height: 80px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border-radius: 10px;
 }
 .name1-field{
     display: flex;
@@ -18,10 +20,16 @@
     flex-direction: column;
         margin-left: 35px;
 }
+.name1-field  span{
+    font-weight: 500;
+}
 .name2-field {
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
     margin-right: 35px;
+}
+.name2-field span {
+    font-weight: 500;
 }

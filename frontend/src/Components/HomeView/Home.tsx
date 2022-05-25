@@ -4,14 +4,12 @@ import classes from "./home.module.css";
 const Home = () => {
   const navigate = useNavigate();
   const name = useRef<HTMLInputElement>(null);
-    const room = useRef<HTMLInputElement>(null);
-
+  const room = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string>();
 
   const handleStart = () => {
     const inputName = name.current?.value;
     const inputRoom = room.current?.value;
-
     if (inputName?.trim().length == 0 || inputRoom?.trim().length == 0) {
       setError("field is missing");
     } else {
