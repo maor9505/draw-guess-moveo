@@ -3,25 +3,25 @@
 
 import express, { Request } from "express";
 import bodyParser from "body-parser";
-import socket from 'socket.io';
+import socketIO from 'socket.io';
 
 const app = express();
- app.use((req, res, next) => {
-   res.setHeader("Access-Control-Allow-Origin", "*");
-   res.setHeader("Access-Control-Allow-Credentials", "true");
+//  app.use((req, res, next) => {
+//    res.setHeader("Access-Control-Allow-Origin", "*");
+//    res.setHeader("Access-Control-Allow-Credentials", "true");
 
-   res.setHeader(
-     "Access-Control-Allow-Methods",
-     "OPTIONS, GET, POST, PUT, PATCH, DELETE"
-   );
-   res.header(
-     "Access-Control-Allow-Headers",
-     "Origin, X-Requested-With, Content-Type, Authorization"
-   );
+//    res.setHeader(
+//      "Access-Control-Allow-Methods",
+//      "OPTIONS, GET, POST, PUT, PATCH, DELETE"
+//    );
+//    res.header(
+//      "Access-Control-Allow-Headers",
+//      "Origin, X-Requested-With, Content-Type, Authorization"
+//    );
 
    // res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-   next();
- });
+//    next();
+//  });
 // app.use(bodyParser.json()); 
 // app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -30,26 +30,36 @@ const app = express();
 });
 
 
-const io =  new socket.Server(server);
+const io = new socketIO.Server(server);
 io.on("connection", (socket) => {
   console.log("connect");
-
   socket.on("Start Game", (data) => {
     console.log("player join ");
     console.log(data.name);
-    socket.broadcast.emit("Start Game", {
-      name: data.name,
-    });
+    console.log("player room ");
+    console.log(data.room);
+    socket.join(data.room)
+    socket.to(data.room).emit("Start Game", data);
   });
     socket.on("User Log", (data) => {
-      socket.broadcast.emit("User Log", data);
+      socket.to(data.room).emit("User Log", data);
     });
     socket.on("Send Draw", (data) => {
-        console.log('get draw from..')
-        console.log(data.name)
-        console.log(socket.id)
-      socket.broadcast.emit("Get Draw", data);
+        console.log('Send Draw room:  '+ data.room)
+        console.log('user send draw:  '+ data.name)
+      socket.to(data.room).emit("Get Draw", data);
     });
+      socket.on("Guess Correct", (data) => {
+      
+        console.log("user guss correct and sent to");
+        console.log(data.socketId)
+        socket.to(data.room).emit("Guess Correct", data);
+      });
+      socket.on("Send Word", (data) => {
+        console.log('Send Word')
+        console.log('Data--  '+data)
+        socket.to(data.room).emit("Get Word", data);
+      });
 });
 
 

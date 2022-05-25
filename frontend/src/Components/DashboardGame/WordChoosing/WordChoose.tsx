@@ -1,6 +1,6 @@
-import React, { useState ,useEffect,FC} from 'react'
-import classes from './wordchoose.module.css';
-import randomWord from 'random-words';
+import React, { useState, useEffect, FC } from "react";
+import classes from "./wordchoose.module.css";
+import randomWord from "random-words";
 
 const WordChoose = (props: {
   handleChooice: (word: string, type: string) => void;
@@ -9,37 +9,62 @@ const WordChoose = (props: {
   const [word5, setWord5] = useState<string>("");
   const [word6OrHigher, setWord6OrHigher] = useState<string>("");
   useEffect(() => {
-    let w = randomWord();
-    setWord3Or4(getWordWith3Or4(w));
-    setWord5(getWordWith5(w));
-    setWord6OrHigher(getmin6OrHigher(w));
+    console.log("choose Word C");
+    // setWord3Or4(getWord([3, 4]));
+    // setWord5(getWord([5]));
+    // setWord6OrHigher(getWord([6]));
+    setWord3Or4(getWordWith3Or4());
+    setWord5(getWordWith5());
+     setWord6OrHigher(getmin6OrHigher());
   }, []);
 
   // return word with min 3 letters or max 4 letter
-  const getWordWith3Or4 = (word: string): string => {
+  const getWordWith3Or4 = (): string => {
+    let word=randomWord()
     if (word.length === 3 || word.length === 4) {
       return word;
     }
     const sWord = randomWord();
-    return getWordWith3Or4(sWord);
+    return getWordWith3Or4();
   };
 
   // return word with 5 letters
-  const getWordWith5 = (word: string): string => {
+  const getWord = (lengthOptions: number[]): string => {
+    let word = randomWord();
+    if (lengthOptions.length > 1) {
+      while (
+        word.length !== lengthOptions[0] ||
+        word.length !== lengthOptions[1]
+      ) {
+        word = randomWord();
+      }
+    }else{
+    while (word.length !== lengthOptions[0]) {
+      word = randomWord();
+    }
+  }
+    return word;
+  };
+
+  // return word with 5 letters
+  const getWordWith5 = (): string => {
+        let word = randomWord();
+
     if (word.length === 5) {
       return word;
     }
     const sWord = randomWord();
-    return getWordWith5(sWord);
+    return getWordWith5();
   };
 
   // return word with min 6 letters or higher
-  const getmin6OrHigher = (word: string): string => {
+  const getmin6OrHigher = (): string => {
+        let word = randomWord();
     if (word.length >= 6) {
       return word;
     }
     const sWord = randomWord();
-    return getmin6OrHigher(sWord);
+    return getmin6OrHigher();
   };
 
   return (
@@ -83,4 +108,4 @@ const WordChoose = (props: {
   );
 };
 
-export default WordChoose
+export default WordChoose;

@@ -1,24 +1,19 @@
 import React,{FC} from 'react'
+import { IScore } from '../../../Interfaces/score';
 import classes from './score.module.css';
-interface Score {
-  firstPlayerName:string;
-  firstPlayerScore:number;
-  secondPlayerName:string;
-  secondPlayerScore:number;
-  timer: string;
-}
-const Score:FC<Score> = (props) => {
+
+const Score:FC<IScore> = (props) => {
   return (
     <div className={classes.container}>
       <div className={classes.scoreboard}>
         <div className={classes["name1-field"]}>
-          <span>{props.firstPlayerName}</span>
-          <span>{props.firstPlayerScore}</span>
+          <span>{props.firstPlayer.name}</span>
+          <span>{props.firstPlayer.score}</span>
         </div>
         <span>{props.timer}</span>
         <div className={classes["name2-field"]}>
-          <span>{props.secondPlayerName}</span>
-          <span>{props.secondPlayerScore}</span>
+          <span>{props.secondPlayer.name}</span>
+          <span>{props.secondPlayer.score}</span>
         </div>
       </div>
     </div>

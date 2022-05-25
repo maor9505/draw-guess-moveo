@@ -10,3 +10,7 @@
     margin-top: 15px;
     background-color: transparent;
 }
+.error{
+     color: red;
+     font-weight: 500;
+}
