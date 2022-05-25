@@ -8,16 +8,18 @@ const Canvas = (props: Icanvas) => {
   const [inputGuess, setInputGuess] = useState<string>();
   const [error, setError] = useState<string>("");
 
+  // clear canvas
   const handleClear = () => {
     canvas.current?.clear();
   };
+  // get the draw and send thet to the handler
   const handleSend = () => {
     props.handleDraw(canvas.current?.getSaveData());
   };
+// check use guess and handle
   const handleGuessUser = (e: FormEvent) => {
     e.preventDefault();
     if (inputGuess === props.wordChoose.word) {
-      console.log(" canvas -- user correct");
       props.handleGuess(true, props.wordChoose);
     } else {
       setError("Try again...");

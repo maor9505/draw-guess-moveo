@@ -1,8 +1,7 @@
 // npm start  --- start nodemon
 // tsc --watch  ---  auto compile ts to js
 
-import express, { Request } from "express";
-import bodyParser from "body-parser";
+import express from "express";
 import socketIO from 'socket.io';
 
 const app = express();
@@ -38,6 +37,7 @@ io.on("connection", (socket) => {
       });
       socket.on("Exit Game", () => {
         io.emit("Exit Game");
+        io.close();
       });
 });
 

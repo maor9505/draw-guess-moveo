@@ -7,6 +7,7 @@ const Home = () => {
   const room = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string>();
 
+  // get user inputs and pass them to game page
   const handleStart = () => {
     const inputName = name.current?.value;
     const inputRoom = room.current?.value;

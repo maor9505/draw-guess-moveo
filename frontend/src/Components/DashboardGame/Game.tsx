@@ -100,8 +100,17 @@ const Game = () => {
     socket.on("Get Word", (data) => {
       setWordChoose({ word: data.word, type: data.type });
     });
+    return () => {
+      socket.off("Start Game");
+      socket.off("User Log");
+      socket.off("Get Draw");
+      socket.off("Exit Game");
+      socket.off("Guess Correct");
+      socket.off("Get Word");
+    };
   }, []);
 
+  // handle with user chooice and emit the word for the second player for check
   const handleChooice = (word: string, type: string) => {
     socket.emit("Send Word", {
       word: word,
@@ -111,6 +120,7 @@ const Game = () => {
     setisChooseWord(false);
     setWordChoose({ word: word, type: type });
   };
+  // get user draw and emit to second user
   const handleDraw = (draw: object) => {
     socket.emit("Send Draw", {
       name: firstPlayer.name,
@@ -120,6 +130,7 @@ const Game = () => {
     });
     setIsWaitingForUserGuess(true);
   };
+  // get the currect word from user input check wich score he earn and emit
   const handleGuess = (isGuess: boolean, word: Iword) => {
     if (isGuess) {
       let score = 0;
@@ -134,7 +145,6 @@ const Game = () => {
           score = firstPlayer.score + 3;
           break;
       }
-
       socket.emit("Guess Correct", {
         playerGuess: secondPlayer.name,
         score: score,
@@ -147,7 +157,7 @@ const Game = () => {
       setUserDraw("");
     }
   };
-
+  // emit exit game
   const handleExitGame = () => {
     socket.emit("Exit Game");
   };

@@ -38,5 +38,6 @@ io.on("connection", (socket) => {
     });
     socket.on("Exit Game", () => {
         io.emit("Exit Game");
+        io.close();
     });
 });
