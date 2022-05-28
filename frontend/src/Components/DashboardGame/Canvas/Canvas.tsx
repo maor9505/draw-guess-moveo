@@ -31,9 +31,9 @@ const Canvas = (props: Icanvas) => {
         ref={canvas}
         canvasWidth={400}
         canvasHeight={400}
-        gridColor={"rgb(51, 102, 153)"}
         brushRadius={5}
         saveData={props.userDraw}
+        hideGrid={false}
       />
       {!props.isGuess && (
         <div className={classes.buttons}>

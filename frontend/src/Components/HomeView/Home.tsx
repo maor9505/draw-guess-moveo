@@ -1,7 +1,9 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState,useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { SocketContext } from "../Context/SocketContext";
 import classes from "./home.module.css";
 const Home = () => {
+   const { socket } = useContext(SocketContext);
   const navigate = useNavigate();
   const name = useRef<HTMLInputElement>(null);
   const room = useRef<HTMLInputElement>(null);
@@ -11,10 +13,20 @@ const Home = () => {
   const handleStart = () => {
     const inputName = name.current?.value;
     const inputRoom = room.current?.value;
+    if(inputRoom?.trim().length!==0){
+      socket.emit('Join Room',{room:inputRoom})
+    }
     if (inputName?.trim().length == 0 || inputRoom?.trim().length == 0) {
-      setError("field is missing");
+      setError("Field is missing");
     } else {
-      navigate(`/game/${inputName}/${inputRoom}`);
+      socket.on('Join Room',(data)=>{
+        if(data.isJoin){
+          navigate(`/game/${inputName}/${inputRoom}`);
+        }
+        else{
+          setError("Full Room try another room...");
+        }
+      })
     }
   };
   return (
