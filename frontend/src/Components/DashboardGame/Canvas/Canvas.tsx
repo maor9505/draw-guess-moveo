@@ -5,7 +5,7 @@ import classes from "./canvas.module.css";
 
 const Canvas = (props: Icanvas) => {
   const canvas = useRef(CanvasDraw);
-  const [inputGuess, setInputGuess] = useState<string>();
+  const [inputGuess, setInputGuess] = useState<string>("");
   const [error, setError] = useState<string>("");
 
   // clear canvas

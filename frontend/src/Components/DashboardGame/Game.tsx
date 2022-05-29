@@ -34,11 +34,11 @@ const Game = () => {
 
   useEffect(() => {
     if (name && room) {
-         socket.emit("Start Game", {
-           name: name,
-           socketId: socket.id,
-           room: room,
-         });
+      socket.emit("Start Game", {
+        name: name,
+        socketId: socket.id,
+        room: room,
+      });
       setFirstPlayer((prevState) => ({ ...prevState, name: name, room: room }));
     }
     socket.on("Start Game", (data) => {
@@ -103,6 +103,7 @@ const Game = () => {
     socket.emit("Send Word", {
       word: word,
       type: type,
+      room: firstPlayer.room,
     });
     setisChooseWord(false);
     setWordChoose({ word: word, type: type });
